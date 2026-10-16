@@ -115,7 +115,15 @@ export function faqSchema(items: readonly Faq[]) {
   };
 }
 
-/** Case studies, described as articles about a deployment. */
+/**
+ * Case studies, described as articles about a deployment.
+ *
+ * `articleBody` carries the full challenge and solution prose. On the page
+ * itself that text lives inside a panel that is only mounted once a card is
+ * opened, so without this a crawler would only ever see the summary. This is
+ * the honest way to expose it — the structured data says exactly what the
+ * article contains, rather than hiding a duplicate copy in the markup.
+ */
 export function caseStudyListSchema(studies: readonly CaseStudy[]) {
   return {
     '@context': 'https://schema.org',
@@ -127,7 +135,9 @@ export function caseStudyListSchema(studies: readonly CaseStudy[]) {
         '@type': 'Article',
         headline: study.headline,
         description: study.summary,
+        articleBody: `${study.challenge}\n\n${study.solution}`,
         about: study.sector,
+        locationCreated: study.location,
         publisher: { '@id': `${siteUrl}/#organization` },
         url: `${siteUrl}/case-studies#${study.slug}`,
       },
