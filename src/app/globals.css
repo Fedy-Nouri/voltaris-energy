@@ -188,15 +188,31 @@
 /* Faint technical grid, drawn in CSS so there is no image asset to ship. */
 @utility bg-grid {
   background-image:
-    linear-gradient(to right, color-mix(in oklab, currentColor 8%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklab, currentColor 8%, transparent) 1px, transparent 1px);
+    linear-gradient(
+      to right,
+      color-mix(in oklab, currentColor 8%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, currentColor 8%, transparent) 1px,
+      transparent 1px
+    );
   background-size: 64px 64px;
 }
 
 @utility bg-grid-sm {
   background-image:
-    linear-gradient(to right, color-mix(in oklab, currentColor 8%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklab, currentColor 8%, transparent) 1px, transparent 1px);
+    linear-gradient(
+      to right,
+      color-mix(in oklab, currentColor 8%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, currentColor 8%, transparent) 1px,
+      transparent 1px
+    );
   background-size: 24px 24px;
 }
 
