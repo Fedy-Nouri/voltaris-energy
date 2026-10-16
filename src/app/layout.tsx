@@ -82,14 +82,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en-GB" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="flex min-h-dvh flex-col">
         {/*
-          Framer Motion hides elements behind `initial` states. If JavaScript
-          fails to load those states are never resolved, so this rule makes
-          every transition-wrapped and reveal-wrapped element visible for
-          visitors without JS. Content is never dependent on the animation
-          layer running.
+          Framer Motion writes its `initial` state into the server-rendered
+          markup, which means a reveal's hidden state is the *final* state for
+          anyone whose JavaScript never runs. This rule reinstates those
+          elements so content is never dependent on the animation layer.
+
+          `> *` covers the direct children of a stagger group, which are hidden
+          through variant inheritance rather than by their own `initial`. It is
+          deliberately not `*`: descendants deeper than that include the live
+          dashboard's chart bars, whose transforms carry real meaning and must
+          not be reset.
         */}
         <noscript>
-          <style>{`[data-page-transition]{opacity:1!important;transform:none!important}`}</style>
+          <style>{`[data-page-transition],[data-reveal],[data-reveal]>*{opacity:1!important;transform:none!important}`}</style>
         </noscript>
 
         {/* Describes the company and the site once, for the whole domain. */}

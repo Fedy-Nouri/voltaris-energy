@@ -64,6 +64,12 @@ export function Reveal({
 
   return (
     <MotionTag
+      /*
+       * Marks this element for the `<noscript>` rule in the root layout, which
+       * forces it visible if JavaScript never runs. Without it, a reveal's
+       * `hidden` state would be the final state for such a visitor.
+       */
+      data-reveal
       className={className}
       variants={variants}
       initial="hidden"

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion, type Variants } from 'framer-motion';
-import type { LucideIcon } from 'lucide-react';
+import { Icon, type IconKey } from '@/lib/icons';
 import { cn } from '@/lib/utils';
 import { transitionSnappy } from '@/lib/motion';
 
@@ -17,7 +17,11 @@ type ButtonProps = {
   size?: ButtonSize;
   /** Switches the neutral variants to their light-on-dark palette. */
   onDark?: boolean;
-  icon?: LucideIcon;
+  /**
+   * Key from the icon registry rather than a component, so this prop can be set
+   * from a Server Component — see the note in `lib/icons.tsx`.
+   */
+  icon?: IconKey;
   iconPosition?: 'left' | 'right';
   fullWidth?: boolean;
   className?: string;
@@ -105,7 +109,7 @@ export function Button({
   variant = 'primary',
   size = 'md',
   onDark = false,
-  icon: Icon,
+  icon,
   iconPosition = 'right',
   fullWidth = false,
   className,
@@ -138,17 +142,17 @@ export function Button({
         />
       )}
 
-      {Icon && iconPosition === 'left' && (
+      {icon && iconPosition === 'left' && (
         <motion.span variants={iconMotion} className="relative shrink-0">
-          <Icon className="size-4" aria-hidden />
+          <Icon name={icon} className="size-4" />
         </motion.span>
       )}
 
       <span className="relative">{children}</span>
 
-      {Icon && iconPosition === 'right' && (
+      {icon && iconPosition === 'right' && (
         <motion.span variants={iconMotion} className="relative shrink-0">
-          <Icon className="size-4" aria-hidden />
+          <Icon name={icon} className="size-4" />
         </motion.span>
       )}
     </>

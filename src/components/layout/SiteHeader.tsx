@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, useMotionValueEvent, useScroll } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+
 import { Logo } from '@/components/layout/Logo';
 import { MobileNav } from '@/components/layout/MobileNav';
 import { Button } from '@/components/ui/Button';
@@ -66,8 +66,16 @@ export function SiteHeader() {
               <Logo onDark />
             </Link>
 
-            {/* ---- Desktop navigation ---- */}
-            <nav aria-label="Main" className="hidden lg:block">
+            {/*
+              ---- Desktop navigation ----
+              `max-lg:hidden` rather than `hidden lg:block`: one utility that
+              says "hidden below lg" instead of two that have to resolve
+              against each other in the cascade. Besides being clearer, it is
+              immune to the surprisingly common browser extensions that inject
+              `.hidden { display: none !important }` and would otherwise keep
+              this nav hidden at every width.
+            */}
+            <nav aria-label="Main" className="max-lg:hidden">
               <ul className="flex items-center gap-1">
                 {primaryNav.map((item) => {
                   const active = isActive(item.href);
@@ -112,7 +120,7 @@ export function SiteHeader() {
             </nav>
 
             <div className="flex items-center gap-2">
-              <Button href="/contact" size="sm" icon={ArrowRight} className="hidden sm:inline-flex">
+              <Button href="/contact" size="sm" icon="arrowRight" className="max-sm:hidden">
                 Book a site survey
               </Button>
 

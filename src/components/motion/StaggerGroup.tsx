@@ -33,6 +33,12 @@ export function StaggerGroup({
 
   return (
     <MotionTag
+      /*
+       * The `<noscript>` rule in the root layout targets this attribute and its
+       * direct children, which is exactly the set of elements a stagger hides
+       * through variant inheritance.
+       */
+      data-reveal
       className={cn(className)}
       variants={staggerParent(stagger, delay)}
       initial="hidden"
