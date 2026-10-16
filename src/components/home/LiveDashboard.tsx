@@ -110,21 +110,29 @@ export function LiveDashboard() {
   const [samples, setSamples] = useState<number[]>(createInitialSeries);
   const [clock, setClock] = useState(INITIAL_CLOCK);
 
-  // Start the clock on mount. Kept out of the render path so the server and
-  // the first client render agree on `INITIAL_CLOCK`.
-  useEffect(() => {
-    setClock(formatClock(new Date()));
-  }, []);
-
   useEffect(() => {
     if (!isInView || prefersReducedMotion) return;
+
+    /*
+     * The clock is set from a zero-delay timeout rather than straight in the
+     * effect body. Reading `Date` during render or in the render-blocking part
+     * of an effect would put a client-only value into the first commit, which
+     * is both a hydration hazard and the cascading re-render that
+     * `react-hooks/set-state-in-effect` exists to prevent. Deferring by one
+     * macrotask puts the real time on screen imperceptibly later, after
+     * hydration has settled.
+     */
+    const firstTick = setTimeout(() => setClock(formatClock(new Date())), 0);
 
     const interval = setInterval(() => {
       setSamples(advanceSeries);
       setClock(formatClock(new Date()));
     }, TICK_MS);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(firstTick);
+      clearInterval(interval);
+    };
   }, [isInView, prefersReducedMotion]);
 
   /* ---- Derived figures ---- */

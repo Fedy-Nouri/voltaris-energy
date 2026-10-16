@@ -46,7 +46,7 @@ export default function AboutPage() {
       {/* ---- Mission ---- */}
       <section className="py-16 sm:py-24">
         <Container width="wide">
-          <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-16">
             <SectionHeading
               eyebrow="What we do"
               title="Instruments first, opinions second."

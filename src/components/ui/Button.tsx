@@ -179,6 +179,9 @@ export function Button({
         href={href}
         target={target}
         rel={rel}
+        // Forwarded for links too, not just buttons: callers such as the
+        // mobile drawer need to react to the click as well as navigate.
+        onClick={onClick}
         aria-label={ariaLabel}
         className={classes}
       >

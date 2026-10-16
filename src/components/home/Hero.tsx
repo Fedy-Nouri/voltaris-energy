@@ -52,7 +52,7 @@ export function Hero() {
       />
 
       <Container width="wide" className="relative">
-        <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.05fr] lg:gap-14">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-14">
           {/* ---- Copy ---- */}
           <motion.div
             data-reveal

@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -26,15 +25,17 @@ type MobileNavProps = {
  */
 export function MobileNav({ isActive }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const pathname = usePathname();
   const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  // Close on navigation. Without this the drawer would stay open over the new
-  // page, because a client-side route change does not unmount the header.
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
+  /*
+   * The drawer closes from the link's own click handler rather than from an
+   * effect watching `usePathname()`. A client-side navigation does not unmount
+   * the header, so something has to close it — but reacting to the route
+   * change after the fact means a render with the drawer still open over the
+   * new page, and it is a `setState` in an effect for an event we already
+   * know about. Closing at the source is both simpler and a frame earlier.
+   */
 
   // Escape to close, and lock body scroll so the page behind cannot move.
   useEffect(() => {
@@ -51,11 +52,14 @@ export function MobileNav({ isActive }: MobileNavProps) {
     // Move focus into the panel so a keyboard user is not left behind it.
     panelRef.current?.focus();
 
+    // Captured on open: by the time cleanup runs the ref may point elsewhere,
+    // and focus needs to return to the button that actually opened this.
+    const trigger = triggerRef.current;
+
     return () => {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener('keydown', handleKeyDown);
-      // Return focus to the button that opened the drawer.
-      triggerRef.current?.focus();
+      trigger?.focus();
     };
   }, [isOpen]);
 
@@ -127,6 +131,7 @@ export function MobileNav({ isActive }: MobileNavProps) {
                     >
                       <Link
                         href={item.href}
+                        onClick={() => setIsOpen(false)}
                         aria-current={isActive(item.href) ? 'page' : undefined}
                         className={cn(
                           'flex items-center justify-between rounded-lg px-3 py-3 text-lg font-medium transition-colors',
@@ -146,7 +151,7 @@ export function MobileNav({ isActive }: MobileNavProps) {
               </nav>
 
               <div className="shrink-0 space-y-4 border-t border-white/8 px-5 py-6">
-                <Button href="/contact" fullWidth size="md">
+                <Button href="/contact" fullWidth size="md" onClick={() => setIsOpen(false)}>
                   Book a site survey
                 </Button>
                 <a

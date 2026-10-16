@@ -41,7 +41,7 @@ export default function ContactPage() {
       {/* ---- Form & details ---- */}
       <section className="py-16 sm:py-20">
         <Container width="wide">
-          <div className="grid gap-12 lg:grid-cols-[1.25fr_1fr] lg:gap-16">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-16">
             {/* Form */}
             <Reveal>
               <div className="rounded-panel ring-ink-100 shadow-panel bg-white p-6 ring-1 sm:p-8">

@@ -41,13 +41,13 @@ export function HowItWorks() {
         <div className="relative">
           {/* Rail track. Hidden on small screens where steps stack full width. */}
           <div
-            className="bg-ink-200 absolute top-2 bottom-2 left-[1.4375rem] hidden w-px sm:block"
+            className="bg-ink-200 absolute top-2 bottom-2 left-[1.4375rem] w-px max-sm:hidden"
             aria-hidden
           />
           {/* Rail fill, driven by scroll progress. */}
           <motion.div
             style={{ scaleY: railScale }}
-            className="bg-volt-500 absolute top-2 bottom-2 left-[1.4375rem] hidden w-px origin-top sm:block"
+            className="bg-volt-500 absolute top-2 bottom-2 left-[1.4375rem] w-px origin-top max-sm:hidden"
             aria-hidden
           />
 
@@ -73,7 +73,13 @@ export function HowItWorks() {
                 <div className="sm:pt-1.5">
                   <div className="flex flex-wrap items-center gap-3">
                     <h3 className="text-ink-900 text-lg font-semibold">
-                      <span className="text-ink-300 mr-2 font-mono text-sm">
+                      {/*
+                        `aria-hidden` because the number is purely visual
+                        ordering that the surrounding `<ol>` already conveys.
+                        Left exposed it would run into the title with no
+                        separating space and be announced as "01Site survey".
+                      */}
+                      <span className="text-ink-300 mr-2 font-mono text-sm" aria-hidden>
                         {String(index + 1).padStart(2, '0')}
                       </span>
                       {step.title}

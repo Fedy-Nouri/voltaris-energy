@@ -1,6 +1,6 @@
 'use client';
 
-import { startTransition, useActionState, useEffect, useRef, useState } from 'react';
+import { startTransition, useActionState, useEffect, useRef, useSyncExternalStore } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -12,6 +12,27 @@ import { contactSchema, type ContactInput, type ContactState } from '@/lib/valid
 import { EASE_OUT_EXPO } from '@/lib/motion';
 
 const initialState: ContactState = { status: 'idle' };
+
+/* -------------------------------------------------------------------------- */
+/* Hydration detection                                                        */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * `useSyncExternalStore` with a differing server snapshot is React's own way of
+ * asking "has the client taken over?" — it returns the server value during SSR
+ * and the client value from the first client render onwards.
+ *
+ * The obvious alternative, `useState(false)` plus an effect that sets it true,
+ * does the same job but schedules a second render after paint purely to flip a
+ * boolean, which is exactly the cascade the `react-hooks/set-state-in-effect`
+ * rule warns about.
+ *
+ * These three functions are module-level constants so their identity is stable
+ * across renders; inline arrows would make React re-subscribe every time.
+ */
+const subscribeNever = () => () => {};
+const getTrue = () => true;
+const getFalse = () => false;
 
 /**
  * Contact form.
@@ -45,8 +66,7 @@ export function ContactForm() {
    * errors would leave a stale message under a field the visitor has already
    * corrected.
    */
-  const [isHydrated, setIsHydrated] = useState(false);
-  useEffect(() => setIsHydrated(true), []);
+  const isHydrated = useSyncExternalStore(subscribeNever, getTrue, getFalse);
 
   const {
     register,

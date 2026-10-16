@@ -27,13 +27,13 @@ export function Timeline({ milestones }: { milestones: readonly Milestone[] }) {
     <div ref={ref} className="relative">
       {/* Rail track */}
       <div
-        className="bg-ink-200 absolute top-2 bottom-2 left-[4.5rem] hidden w-px sm:block"
+        className="bg-ink-200 absolute top-2 bottom-2 left-[4.5rem] w-px max-sm:hidden"
         aria-hidden
       />
       {/* Rail fill, scaled by scroll progress */}
       <motion.div
         style={{ scaleY: railScale }}
-        className="bg-volt-500 absolute top-2 bottom-2 left-[4.5rem] hidden w-px origin-top sm:block"
+        className="bg-volt-500 absolute top-2 bottom-2 left-[4.5rem] w-px origin-top max-sm:hidden"
         aria-hidden
       />
 
@@ -57,7 +57,7 @@ export function Timeline({ milestones }: { milestones: readonly Milestone[] }) {
 
             {/* Marker sitting on the rail. */}
             <span
-              className="ring-ink-25 bg-volt-500 absolute left-[4.5rem] z-10 hidden size-3 -translate-x-1/2 rounded-full ring-4 sm:block sm:translate-y-2"
+              className="ring-ink-25 bg-volt-500 absolute left-[4.5rem] z-10 size-3 -translate-x-1/2 rounded-full ring-4 max-sm:hidden sm:translate-y-2"
               aria-hidden
             />
 

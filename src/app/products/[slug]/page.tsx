@@ -107,7 +107,7 @@ export default async function ProductPage({ params }: PageProps) {
       {/* ---- Overview and capabilities ---- */}
       <section className="py-16 sm:py-24">
         <Container width="wide">
-          <div className="grid gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-16">
             <div className="flex flex-col gap-10">
               <Reveal className="flex flex-col gap-5">
                 <span className="bg-volt-50 text-volt-700 ring-volt-100 flex size-12 items-center justify-center rounded-xl ring-1">

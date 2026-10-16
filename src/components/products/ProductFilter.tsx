@@ -86,7 +86,7 @@ export function ProductFilter({ products }: { products: readonly Product[] }) {
           );
         })}
 
-        <p aria-live="polite" className="text-ink-400 ml-auto hidden font-mono text-xs sm:block">
+        <p aria-live="polite" className="text-ink-400 ml-auto font-mono text-xs max-sm:hidden">
           {visible.length} of {products.length}
         </p>
       </div>

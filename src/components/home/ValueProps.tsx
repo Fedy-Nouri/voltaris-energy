@@ -12,8 +12,22 @@ import { Icon } from '@/lib/icons';
  */
 export function ValueProps() {
   return (
-    <section className="bg-ink-25 border-ink-100 border-y py-16 sm:py-20">
+    <section
+      className="bg-ink-25 border-ink-100 border-y py-16 sm:py-20"
+      aria-labelledby="value-props-heading"
+    >
       <Container width="wide">
+        {/*
+          This section is deliberately heading-less in the design — three cards
+          straight under the hero. Without an `h2` the document outline would
+          jump from the page `h1` to the cards' `h3`s, which is exactly the
+          kind of gap that makes a screen reader's heading list confusing. A
+          visually hidden heading closes it without touching the layout.
+        */}
+        <h2 id="value-props-heading" className="sr-only">
+          Why measure with Voltaris
+        </h2>
+
         <StaggerGroup className="grid gap-5 md:grid-cols-3" stagger={0.1}>
           {valueProps.map((prop) => (
             <Card key={prop.title} spotlight className="gap-4 p-7">

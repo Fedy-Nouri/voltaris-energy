@@ -44,8 +44,16 @@ export default function ProductsPage() {
         ]}
       />
 
-      <section className="py-16 sm:py-20">
+      <section className="py-16 sm:py-20" aria-labelledby="catalogue-heading">
         <Container width="wide">
+          {/*
+            The filter tabs act as this section's visible heading, so a visually
+            hidden `h2` keeps the document outline continuous — without it the
+            page jumps straight from the `h1` to each card's `h3`.
+          */}
+          <h2 id="catalogue-heading" className="sr-only">
+            Product catalogue
+          </h2>
           <ProductFilter products={products} />
         </Container>
       </section>

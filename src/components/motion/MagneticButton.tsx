@@ -2,8 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import { clamp } from '@/lib/utils';
+import { clamp, cn } from '@/lib/utils';
 
 type MagneticButtonProps = {
   children: React.ReactNode;
@@ -31,7 +30,9 @@ export function MagneticButton({ children, strength = 10, className }: MagneticB
   const springY = useSpring(y, { stiffness: 220, damping: 20, mass: 0.6 });
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    if (!ref.current) return;
+    // Reduced motion is honoured by not moving, rather than by rendering a
+    // different element — see the note below the component.
+    if (!ref.current || prefersReducedMotion) return;
     const bounds = ref.current.getBoundingClientRect();
 
     // Offset of the cursor from the element's centre, normalised to -1..1.
@@ -47,10 +48,17 @@ export function MagneticButton({ children, strength = 10, className }: MagneticB
     y.set(0);
   }
 
-  if (prefersReducedMotion) {
-    return <div className={cn('inline-flex', className)}>{children}</div>;
-  }
-
+  /*
+   * One tree, in every case.
+   *
+   * Returning a plain `div` under reduced motion and a `motion.div` otherwise
+   * would be a hydration mismatch: `useReducedMotion()` reads a media query
+   * that does not exist on the server, so SSR always produces the non-reduced
+   * branch. A visitor with "reduce motion" enabled would then render something
+   * different on the client and React would discard the server markup.
+   * Instead the element is identical and the pointer handler simply declines
+   * to move it.
+   */
   return (
     <motion.div
       ref={ref}

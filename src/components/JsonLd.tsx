@@ -14,11 +14,5 @@ type JsonLdProps = {
 export function JsonLd({ schema }: JsonLdProps) {
   const json = JSON.stringify(schema).replace(/</g, '\\u003c');
 
-  return (
-    <script
-      type="application/ld+json"
-      // eslint-disable-next-line react/no-danger -- the only way to emit a JSON-LD script body
-      dangerouslySetInnerHTML={{ __html: json }}
-    />
-  );
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />;
 }

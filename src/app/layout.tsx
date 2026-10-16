@@ -105,8 +105,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SiteHeader />
           <ScrollProgress />
 
-          {/* Target of the "skip to content" link in the header. */}
-          <main id="main" className="flex-1">
+          {/*
+            Target of the "skip to content" link in the header.
+
+            `overflow-x-clip` contains the transient sideways travel of entry
+            animations: a `Reveal from="right"` starts 24px to the right of its
+            final position, which is more than the 20px gutter on a 375px
+            screen, so for the moment before it animates in it would widen the
+            document and produce a horizontal scrollbar.
+
+            `clip` rather than `hidden` matters — `hidden` establishes a scroll
+            container, which silently breaks `position: sticky` for descendants
+            such as the specifications panel on a product page. `clip` prevents
+            the scroll without creating one.
+          */}
+          <main id="main" className="flex-1 overflow-x-clip">
             {children}
           </main>
 

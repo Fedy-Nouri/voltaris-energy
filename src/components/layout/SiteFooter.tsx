@@ -23,7 +23,7 @@ export function SiteFooter() {
       />
 
       <Container width="wide" className="relative">
-        <div className="grid gap-12 py-16 lg:grid-cols-[1.4fr_2.6fr] lg:gap-16 lg:py-20">
+        <div className="grid grid-cols-1 gap-12 py-16 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,2.6fr)] lg:gap-16 lg:py-20">
           {/* ---- Brand & contact ---- */}
           <div className="flex flex-col gap-6">
             <Logo onDark />
@@ -93,12 +93,18 @@ export function SiteFooter() {
         <div className="grid gap-6 border-t border-white/8 py-10 sm:grid-cols-3">
           {offices.map((office) => (
             <div key={office.city}>
-              <h3 className="flex items-baseline gap-2 text-sm font-medium text-white">
-                {office.city}
+              {/*
+                The timezone sits outside the heading. Inside it, the two text
+                nodes concatenate with no whitespace in the accessible name and
+                the office is announced as "RotterdamCET" — the flex gap is
+                visual only and does nothing for a screen reader.
+              */}
+              <div className="flex items-baseline gap-2">
+                <h3 className="text-sm font-medium text-white">{office.city}</h3>
                 <span className="text-eyebrow text-ink-500 font-mono uppercase">
                   {office.timezone}
                 </span>
-              </h3>
+              </div>
               <p className="text-ink-500 mt-1 text-[0.8125rem]">{office.role}</p>
               <address className="mt-2 text-[0.8125rem] not-italic">
                 {office.lines.map((line) => (

@@ -19,8 +19,16 @@ type SpotlightCardProps = {
  * move — Framer Motion writes the composed string to the element's style
  * directly, so this stays cheap even with a dozen cards on screen.
  *
- * The effect is pointer-driven decoration only; it is skipped under reduced
- * motion and is invisible on touch devices, where there is no hover state.
+ * The effect is pointer-driven decoration only, and invisible on touch devices
+ * where there is no hover state.
+ *
+ * Note what reduced motion does *not* do here: it does not remove the gradient
+ * element from the tree. `useReducedMotion()` reads a media query, which the
+ * server cannot see — it is always `false` during SSR. Branching the rendered
+ * markup on it means the server emits one tree and a client with "reduce
+ * motion" enabled emits another, which is a hydration mismatch. Instead the
+ * element always renders and only the pointer tracking is disabled, leaving
+ * the highlight parked off-element and therefore invisible.
  */
 export function SpotlightCard({
   children,
@@ -55,13 +63,11 @@ export function SpotlightCard({
       onPointerLeave={prefersReducedMotion ? undefined : handlePointerLeave}
       className={cn('group relative isolate overflow-hidden', className)}
     >
-      {!prefersReducedMotion && (
-        <motion.div
-          aria-hidden
-          style={{ background }}
-          className="pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        />
-      )}
+      <motion.div
+        aria-hidden
+        style={{ background }}
+        className="pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+      />
       {children}
     </div>
   );
