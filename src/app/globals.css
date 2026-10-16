@@ -1,0 +1,223 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   Design tokens
+   --------------------------------------------------------------------------
+   Everything visual is declared once here as a Tailwind v4 `@theme` token and
+   consumed through generated utilities (`bg-ink-900`, `text-volt-400`,
+   `shadow-panel`, `animate-marquee`, ...). No component hardcodes a hex value,
+   so the whole palette can be retuned from this block alone.
+   ========================================================================== */
+
+@theme {
+  /* ---- Neutrals ---------------------------------------------------------
+     A cool blue-green graphite rather than a pure grey. It reads as
+     instrumentation and keeps the teal accent from looking out of place. */
+  --color-ink-25: #f7f9fa;
+  --color-ink-50: #eff3f5;
+  --color-ink-100: #d9e1e6;
+  --color-ink-200: #b4c2cb;
+  --color-ink-300: #8295a3;
+  --color-ink-400: #5c6e7d;
+  --color-ink-500: #3e4f5e;
+  --color-ink-600: #2a3845;
+  --color-ink-700: #1b2630;
+  --color-ink-800: #131c24;
+  --color-ink-850: #0e151b;
+  --color-ink-900: #0a0f14;
+  --color-ink-950: #06090b;
+
+  /* ---- Volt: primary accent --------------------------------------------
+     volt-400 is the "on dark" accent, volt-700 the "on light" one. The pair
+     exists because a single teal cannot clear 4.5:1 against both ends. */
+  --color-volt-50: #e6fff9;
+  --color-volt-100: #c2fff0;
+  --color-volt-200: #8afce2;
+  --color-volt-300: #4df2ce;
+  --color-volt-400: #1de0b5;
+  --color-volt-500: #0fc39b;
+  --color-volt-600: #089d7d;
+  --color-volt-700: #0a7b64;
+  --color-volt-800: #0c6152;
+  --color-volt-900: #0c4f44;
+
+  /* ---- Signal: reserved for live data, deltas and alert states ---------- */
+  --color-signal-300: #ffd27a;
+  --color-signal-400: #ffb224;
+  --color-signal-500: #f59e0b;
+  --color-signal-600: #d97706;
+  --color-alert-400: #fb7185;
+  --color-alert-500: #e11d48;
+
+  /* ---- Typography -------------------------------------------------------
+     Display sizes are fluid so headings never need per-breakpoint overrides. */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --text-display-xl: clamp(2.75rem, 1.65rem + 4.4vw, 5rem);
+  --text-display-xl--line-height: 1.02;
+  --text-display-xl--letter-spacing: -0.035em;
+
+  --text-display-lg: clamp(2.25rem, 1.55rem + 2.8vw, 3.5rem);
+  --text-display-lg--line-height: 1.06;
+  --text-display-lg--letter-spacing: -0.03em;
+
+  --text-display-md: clamp(1.75rem, 1.35rem + 1.6vw, 2.5rem);
+  --text-display-md--line-height: 1.12;
+  --text-display-md--letter-spacing: -0.025em;
+
+  --text-display-sm: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
+  --text-display-sm--line-height: 1.2;
+  --text-display-sm--letter-spacing: -0.02em;
+
+  /* Small uppercase label used for section eyebrows and table headers. */
+  --text-eyebrow: 0.6875rem;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--letter-spacing: 0.16em;
+
+  /* ---- Radii, shadows, easing ------------------------------------------- */
+  --radius-panel: 0.875rem;
+
+  --shadow-panel: 0 1px 2px rgb(6 9 11 / 0.04), 0 8px 24px -12px rgb(6 9 11 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(6 9 11 / 0.05), 0 18px 40px -16px rgb(6 9 11 / 0.2);
+  --shadow-glow: 0 0 0 1px rgb(29 224 181 / 0.3), 0 12px 40px -12px rgb(29 224 181 / 0.35);
+
+  /* Shared easing curves. Mirrored in src/lib/motion.ts so CSS transitions
+     and Framer Motion animations move with the same character. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  /* ---- Keyframe animations ---------------------------------------------- */
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-led: led 2.4s var(--ease-in-out-quart) infinite;
+  --animate-sheen: sheen 2.6s var(--ease-in-out-quart) infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes led {
+    0%,
+    100% {
+      opacity: 1;
+      box-shadow: 0 0 0 0 currentColor;
+    }
+    50% {
+      opacity: 0.55;
+      box-shadow: 0 0 0 3px color-mix(in oklab, currentColor 18%, transparent);
+    }
+  }
+
+  @keyframes sheen {
+    from {
+      transform: translateX(-120%);
+    }
+    to {
+      transform: translateX(220%);
+    }
+  }
+}
+
+/* ==========================================================================
+   Base layer
+   ========================================================================== */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Offset in-page anchor targets so the sticky header never covers them. */
+    scroll-padding-top: 6rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-white);
+    color: var(--color-ink-800);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Numbers must not jitter when live values tick over. */
+  :where(th, td, .tabular) {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* A single visible, consistent focus ring for keyboard users. */
+  :focus-visible {
+    outline: 2px solid var(--color-volt-500);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-volt-200);
+    color: var(--color-ink-900);
+  }
+
+  /* Honour the OS "reduce motion" setting for everything CSS drives. Framer
+     Motion is handled separately by <MotionConfig reducedMotion="user">. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   Custom utilities
+   --------------------------------------------------------------------------
+   Repeated multi-property treatments, declared once so markup stays short.
+   ========================================================================== */
+
+/* Faint technical grid, drawn in CSS so there is no image asset to ship. */
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, currentColor 8%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, currentColor 8%, transparent) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+@utility bg-grid-sm {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, currentColor 8%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, currentColor 8%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Fades an element out towards its edges — used to stop the grid texture and
+   the logo marquee from ending in a hard line. */
+@utility mask-fade-x {
+  mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+}
+
+@utility mask-fade-b {
+  mask-image: linear-gradient(to bottom, black 55%, transparent);
+}
+
+/* Gradient text used once per page at most, for the hero accent phrase. */
+@utility text-gradient-volt {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-volt-200),
+    var(--color-volt-400) 45%,
+    var(--color-volt-300)
+  );
+  background-clip: text;
+  color: transparent;
+}
