@@ -64,6 +64,12 @@ resolution, and falls back to `http://localhost:3000`. See `.env.example`.
 
 CI runs typecheck, lint, tests and a build on every push and pull request.
 
+> **One note on `package.json`:** there is an `overrides` entry pinning `ajv` to
+> v6. Without it, npm 11 writes a lockfile that `npm ci` then rejects as
+> out of sync — it resolves eslint's `ajv@^6` dependency one way for `install`
+> and another for `ci`. Only eslint uses ajv, and it wants v6, so pinning it
+> removes the ambiguity. Worth knowing because Vercel builds with `npm ci`.
+
 ## Project structure
 
 ```
