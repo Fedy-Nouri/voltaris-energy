@@ -12,13 +12,22 @@ import type { Product } from '@/types';
 /**
  * Product card, shared by the home page teaser and the products index.
  *
- * Wrapped in a `motion.li` so it participates in a parent `StaggerGroup` while
- * still being a list item — a grid of products is a list, and making it a
- * series of `div`s would cost a screen-reader user the item count.
+ * It renders its own `motion.li` rather than being wrapped by the caller for
+ * two reasons. A grid of products is genuinely a list, so the item has to be an
+ * `li` — wrapping it in a `motion.div` inside the `ul` would produce invalid
+ * markup and cost a screen-reader user the item count. And owning the element
+ * means it can carry `layout` and `exit` itself, which is what lets the
+ * products index animate cards into new positions as the filter changes.
  */
 export function ProductCard({ product }: { product: Product }) {
   return (
-    <motion.li variants={fadeUp} className="flex">
+    <motion.li
+      variants={fadeUp}
+      layout
+      exit={{ opacity: 0, scale: 0.96 }}
+      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+      className="flex"
+    >
       <Card href={`/products/${product.slug}`} spotlight className="w-full gap-4 p-6">
         <div className="flex items-start justify-between gap-3">
           <span className="bg-ink-900 text-volt-400 flex size-11 items-center justify-center rounded-xl">
