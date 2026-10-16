@@ -42,7 +42,6 @@ next-env.d.ts
 # editor / tooling
 .idea
 .vscode
-.claude
 AGENTS.md
 
 # personal working notes, not part of the deliverable
