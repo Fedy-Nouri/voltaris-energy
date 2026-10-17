@@ -153,6 +153,25 @@ new one. An enter-only transition is the honest, jank-free option.
 `AnimatePresence` is used where it genuinely works instead — the mobile drawer
 and the case-study panel, whose unmounts this code actually controls.
 
+### Smooth scrolling is opt-in, never global
+
+There is no `html { scroll-behavior: smooth }` anywhere, on purpose. That
+property applies to every programmatic scroll in the document — including the
+`scrollIntoView()` calls the App Router makes while deciding where to put the
+viewport after a navigation. Under `smooth` those become queued animations that
+race each other, and the new page settles wherever the last one was heading
+instead of at the top: click a header link and you land below the hero, on
+roughly every other navigation.
+
+Smooth scrolling for in-page anchors is restored by
+`components/motion/SmoothAnchors.tsx`, a delegated click handler that animates
+only on an explicit `#anchor` click. It honours reduced motion, and the skip
+link opts out via `data-no-smooth` so focus still moves instantly.
+
+Anchor offset is handled solely by `scroll-padding-top: 6rem` on `html`, which
+`scrollIntoView` respects. Targets carry no `scroll-mt` of their own — setting
+both stacked the offsets and landed headings 192px down instead of 96px.
+
 ### One validation schema, both sides
 
 `lib/validation.ts` exports a single Zod schema. The browser uses it through

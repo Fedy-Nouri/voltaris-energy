@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import { MotionProvider } from '@/components/motion/MotionProvider';
+import { SmoothAnchors } from '@/components/motion/SmoothAnchors';
 import { JsonLd } from '@/components/JsonLd';
 import { ScrollProgress } from '@/components/layout/ScrollProgress';
 import { SiteFooter } from '@/components/layout/SiteFooter';
@@ -102,6 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd schema={websiteSchema()} />
 
         <MotionProvider>
+          <SmoothAnchors />
           <SiteHeader />
           <ScrollProgress />
 

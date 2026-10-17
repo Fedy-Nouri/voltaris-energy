@@ -130,8 +130,23 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
-    /* Offset in-page anchor targets so the sticky header never covers them. */
+    /*
+      Deliberately NO `scroll-behavior: smooth` here, and it must not be added
+      back.
+
+      The property applies to every programmatic scroll in the document, which
+      includes the `scrollIntoView()` calls the App Router makes while deciding
+      where to put the viewport after a navigation. Those calls become queued
+      animations that race each other, and the new page settles wherever the
+      last one happened to be heading — several hundred pixels down, below the
+      hero — instead of at the top.
+
+      Smooth scrolling for in-page anchors is opt-in instead, on an explicit
+      click, in components/motion/SmoothAnchors.tsx.
+    */
+
+    /* Offset in-page anchor targets so the fixed header never covers them.
+       Honoured by `scrollIntoView`, so it applies to the anchor handler too. */
     scroll-padding-top: 6rem;
     -webkit-tap-highlight-color: transparent;
   }
@@ -164,17 +179,14 @@
   /* Honour the OS "reduce motion" setting for everything CSS drives. Framer
      Motion is handled separately by <MotionConfig reducedMotion="user">. */
   @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
-
+    /* No `scroll-behavior` override needed — nothing sets it to `smooth`
+       any more. The anchor handler checks the preference itself. */
     *,
     *::before,
     *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
     }
   }
 }

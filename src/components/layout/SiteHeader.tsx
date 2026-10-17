@@ -39,9 +39,12 @@ export function SiteHeader() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      {/* Keyboard users can jump the nav entirely. Visible only on focus. */}
+      {/* Keyboard users can jump the nav entirely. Visible only on focus.
+          `data-no-smooth` opts it out of the anchor glide — focus has to move
+          immediately, not after an animation. */}
       <a
         href="#main"
+        data-no-smooth
         className="text-ink-950 bg-volt-400 sr-only rounded-b-lg px-4 py-2 text-sm font-medium focus:not-sr-only focus:absolute focus:top-0 focus:left-4 focus:z-50"
       >
         Skip to content

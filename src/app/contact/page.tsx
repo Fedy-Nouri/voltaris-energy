@@ -118,7 +118,9 @@ export default function ContactPage() {
       </section>
 
       {/* ---- FAQ ---- */}
-      <section id="faq" className="bg-ink-25 border-ink-100 scroll-mt-24 border-y py-16 sm:py-24">
+      {/* No `scroll-mt`: `scroll-padding-top` on <html> already offsets anchor
+          targets, and setting both doubles the gap. */}
+      <section id="faq" className="bg-ink-25 border-ink-100 border-y py-16 sm:py-24">
         <Container>
           <SectionHeading
             eyebrow="Before you ask"
