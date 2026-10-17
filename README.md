@@ -3,7 +3,7 @@
 A marketing site for a fictional energy management company that sells IoT energy
 monitoring hardware and analytics to industrial and commercial clients.
 
-**Live:** _(deploying — URL goes here)_
+**Live:** https://voltaris-energy-one.vercel.app
 **Repo:** https://github.com/Fedy-Nouri/voltaris-energy
 
 ---
