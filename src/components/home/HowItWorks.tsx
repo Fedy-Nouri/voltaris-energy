@@ -29,7 +29,7 @@ export function HowItWorks() {
   const railScale = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
 
   return (
-    <section ref={sectionRef} className="bg-ink-25 border-ink-100 border-y py-20 sm:py-28">
+    <section ref={sectionRef} className="bg-ink-25 border-ink-100 section-y-lg border-y">
       <Container width="wide">
         <SectionHeading
           eyebrow="How it works"

@@ -6,6 +6,7 @@ import { ArrowUpRight, Quote, X } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { SpecTable } from '@/components/ui/SpecTable';
 import { EASE_OUT_EXPO, fadeUp, revealViewport, staggerParent } from '@/lib/motion';
+import { cn } from '@/lib/utils';
 import type { CaseStudy } from '@/types';
 
 /**
@@ -67,61 +68,98 @@ export function CaseStudyGrid({ studies }: { studies: readonly CaseStudy[] }) {
         initial="hidden"
         whileInView="visible"
         viewport={revealViewport}
-        className="grid gap-5 lg:grid-cols-2"
+        /*
+         * Six columns so a bento can tile exactly: the lead study takes all
+         * six, the remaining three take two each. A two-column grid would
+         * leave the fourth study orphaned on its own row.
+         */
+        className="grid grid-cols-1 gap-4 lg:grid-cols-6"
       >
-        {studies.map((study) => (
-          <motion.li key={study.slug} variants={fadeUp} className="flex">
-            <motion.article
-              layoutId={`case-${study.slug}`}
-              className="rounded-panel ring-ink-100 shadow-panel flex w-full flex-col bg-white ring-1"
+        {studies.map((study, index) => {
+          const isLead = index === 0;
+
+          return (
+            <motion.li
+              key={study.slug}
+              variants={fadeUp}
+              className={cn('flex', isLead ? 'lg:col-span-6' : 'lg:col-span-2')}
             >
-              <div className="flex flex-1 flex-col gap-4 p-6 sm:p-7">
-                <motion.div layoutId={`case-meta-${study.slug}`} className="flex flex-wrap gap-2">
-                  <Badge tone="volt">{study.sector}</Badge>
-                  <Badge tone="outline">{study.location}</Badge>
-                </motion.div>
-
-                <motion.h3
-                  layoutId={`case-title-${study.slug}`}
-                  className="text-ink-900 text-xl font-semibold text-balance"
+              <motion.article
+                layoutId={`case-${study.slug}`}
+                className={cn(
+                  'ring-ink-100 shadow-panel hover:shadow-lift flex w-full flex-col bg-white ring-1 transition-shadow duration-300',
+                  isLead ? 'rounded-panel-lg border-glow' : 'rounded-panel',
+                )}
+              >
+                <div
+                  className={cn(
+                    'flex flex-1 flex-col gap-4',
+                    isLead ? 'p-8 sm:p-10 lg:max-w-3xl' : 'p-6',
+                  )}
                 >
-                  {study.headline}
-                </motion.h3>
+                  <motion.div layoutId={`case-meta-${study.slug}`} className="flex flex-wrap gap-2">
+                    <Badge tone="volt">{study.sector}</Badge>
+                    <Badge tone="outline">{study.location}</Badge>
+                  </motion.div>
 
-                <p className="text-ink-500 text-sm leading-relaxed">{study.summary}</p>
+                  <motion.h3
+                    layoutId={`case-title-${study.slug}`}
+                    className={cn(
+                      'text-ink-900 font-semibold text-balance',
+                      isLead ? 'text-display-sm' : 'text-lg',
+                    )}
+                  >
+                    {study.headline}
+                  </motion.h3>
 
-                {/* Headline results */}
-                <dl className="border-ink-100 mt-auto grid grid-cols-2 gap-4 border-t pt-5 sm:grid-cols-4">
-                  {study.results.map((result) => (
-                    <div key={result.label} className="flex flex-col">
-                      <dd className="text-volt-700 tabular order-1 font-mono text-lg font-semibold">
-                        {result.value}
-                      </dd>
-                      <dt className="text-ink-400 order-2 mt-1 text-[0.75rem] leading-snug">
-                        {result.label}
-                      </dt>
-                    </div>
-                  ))}
-                </dl>
+                  <p
+                    className={cn(
+                      'text-ink-500 leading-relaxed',
+                      isLead ? 'text-[0.9375rem]' : 'text-sm',
+                    )}
+                  >
+                    {study.summary}
+                  </p>
 
-                <button
-                  type="button"
-                  onClick={(event) => open(study.slug, event.currentTarget)}
-                  aria-expanded={openSlug === study.slug}
-                  className="text-ink-900 hover:text-volt-700 group mt-2 inline-flex items-center gap-2 self-start text-sm font-medium transition-colors"
-                >
-                  Read the full study
-                  <ArrowUpRight
-                    className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                    aria-hidden
-                  />
-                  {/* Names the control for assistive tech without bloating the label. */}
-                  <span className="sr-only">: {study.client}</span>
-                </button>
-              </div>
-            </motion.article>
-          </motion.li>
-        ))}
+                  {/* Headline results. Two columns on the narrow cards — four
+                    would crush each figure against its neighbour. */}
+                  <dl
+                    className={cn(
+                      'border-ink-100 mt-auto grid gap-4 border-t pt-5',
+                      isLead ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-2',
+                    )}
+                  >
+                    {study.results.map((result) => (
+                      <div key={result.label} className="flex flex-col">
+                        <dd className="text-volt-700 tabular order-1 font-mono text-lg font-semibold">
+                          {result.value}
+                        </dd>
+                        <dt className="text-ink-400 order-2 mt-1 text-[0.75rem] leading-snug">
+                          {result.label}
+                        </dt>
+                      </div>
+                    ))}
+                  </dl>
+
+                  <button
+                    type="button"
+                    onClick={(event) => open(study.slug, event.currentTarget)}
+                    aria-expanded={openSlug === study.slug}
+                    className="text-ink-900 hover:text-volt-700 group mt-2 inline-flex items-center gap-2 self-start text-sm font-medium transition-colors"
+                  >
+                    Read the full study
+                    <ArrowUpRight
+                      className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      aria-hidden
+                    />
+                    {/* Names the control for assistive tech without bloating the label. */}
+                    <span className="sr-only">: {study.client}</span>
+                  </button>
+                </div>
+              </motion.article>
+            </motion.li>
+          );
+        })}
       </motion.ul>
 
       {/* ---- Expanded panel ---- */}

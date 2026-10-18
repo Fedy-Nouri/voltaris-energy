@@ -14,7 +14,7 @@ export function Testimonial() {
   const { text, author, role, company, metric } = featuredTestimonial;
 
   return (
-    <section className="bg-ink-25 border-ink-100 border-y py-20 sm:py-24">
+    <section className="bg-ink-25 border-ink-100 section-y border-y">
       <Container>
         <Reveal>
           <figure className="flex flex-col items-center gap-8 text-center">

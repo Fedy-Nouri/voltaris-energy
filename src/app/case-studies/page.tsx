@@ -36,7 +36,7 @@ export default function CaseStudiesPage() {
         ]}
       />
 
-      <section className="py-16 sm:py-20" aria-labelledby="studies-heading">
+      <section className="section-y" aria-labelledby="studies-heading">
         <Container width="wide">
           {/* Keeps the outline continuous between the page h1 and each card's h3. */}
           <h2 id="studies-heading" className="sr-only">

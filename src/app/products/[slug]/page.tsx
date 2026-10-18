@@ -105,7 +105,7 @@ export default async function ProductPage({ params }: PageProps) {
       </PageHero>
 
       {/* ---- Overview and capabilities ---- */}
-      <section className="py-16 sm:py-24">
+      <section className="section-y-lg">
         <Container width="wide">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-16">
             <div className="flex flex-col gap-10">
@@ -165,7 +165,7 @@ export default async function ProductPage({ params }: PageProps) {
       </section>
 
       {/* ---- Use cases ---- */}
-      <section className="bg-ink-25 border-ink-100 border-y py-16 sm:py-20">
+      <section className="bg-ink-25 border-ink-100 section-y border-y">
         <Container width="wide">
           <SectionHeading
             eyebrow="Where it is used"
@@ -184,7 +184,7 @@ export default async function ProductPage({ params }: PageProps) {
 
       {/* ---- Related ---- */}
       {related.length > 0 && (
-        <section className="py-16 sm:py-24">
+        <section className="section-y-lg">
           <Container width="wide">
             <SectionHeading
               eyebrow="Also consider"

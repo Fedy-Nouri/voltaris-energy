@@ -14,6 +14,7 @@ import { milestones, team, values } from '@/content/team';
 import { Icon } from '@/lib/icons';
 import { breadcrumbSchema } from '@/lib/schema';
 import { buildMetadata } from '@/lib/seo';
+import { cn } from '@/lib/utils';
 
 export const metadata = buildMetadata({
   title: 'About us',
@@ -44,7 +45,7 @@ export default function AboutPage() {
       />
 
       {/* ---- Mission ---- */}
-      <section className="py-16 sm:py-24">
+      <section className="section-y-lg">
         <Container width="wide">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-16">
             <SectionHeading
@@ -78,7 +79,7 @@ export default function AboutPage() {
       </section>
 
       {/* ---- Values ---- */}
-      <section className="bg-ink-25 border-ink-100 border-y py-16 sm:py-20">
+      <section className="bg-ink-25 border-ink-100 section-y border-y">
         <Container width="wide">
           <SectionHeading
             eyebrow="How we operate"
@@ -86,26 +87,56 @@ export default function AboutPage() {
             className="mb-12"
           />
 
-          <StaggerGroup as="ul" stagger={0.08} className="grid gap-5 sm:grid-cols-2">
-            {values.map((value) => (
-              <StaggerItem
-                as="li"
-                key={value.title}
-                className="rounded-panel ring-ink-100 flex flex-col gap-4 bg-white p-6 ring-1 sm:p-7"
-              >
-                <span className="bg-volt-50 text-volt-700 ring-volt-100 flex size-11 items-center justify-center rounded-xl ring-1">
-                  <Icon name={value.icon} className="size-5" />
-                </span>
-                <h3 className="text-ink-900 text-[1.0625rem] font-semibold">{value.title}</h3>
-                <p className="text-ink-500 text-sm leading-relaxed">{value.description}</p>
-              </StaggerItem>
-            ))}
+          {/* Six columns so the four principles tile as 4 + 2 + 2 + 4 — two
+              wide rows framing two narrow ones, rather than a flat 2×2. */}
+          <StaggerGroup as="ul" stagger={0.08} className="grid grid-cols-1 gap-4 sm:grid-cols-6">
+            {values.map((value, index) => {
+              const isWide = index === 0 || index === 3;
+
+              return (
+                <StaggerItem
+                  as="li"
+                  key={value.title}
+                  className={cn(
+                    'ring-ink-100 shadow-panel hover:shadow-lift flex flex-col gap-4 bg-white ring-1 transition-shadow duration-300',
+                    isWide
+                      ? 'rounded-panel-lg border-glow p-7 sm:col-span-4 sm:p-9'
+                      : 'rounded-panel p-6 sm:col-span-2 sm:p-7',
+                  )}
+                >
+                  <span
+                    className={cn(
+                      'bg-volt-50 text-volt-700 ring-volt-100 flex items-center justify-center rounded-xl ring-1',
+                      isWide ? 'size-13' : 'size-11',
+                    )}
+                  >
+                    <Icon name={value.icon} className={isWide ? 'size-6' : 'size-5'} />
+                  </span>
+                  <h3
+                    className={cn(
+                      'text-ink-900 font-semibold',
+                      isWide ? 'text-display-sm' : 'text-[1.0625rem]',
+                    )}
+                  >
+                    {value.title}
+                  </h3>
+                  <p
+                    className={cn(
+                      'text-ink-500 leading-relaxed',
+                      isWide ? 'max-w-xl text-[0.9375rem]' : 'text-sm',
+                    )}
+                  >
+                    {value.description}
+                  </p>
+                </StaggerItem>
+              );
+            })}
           </StaggerGroup>
         </Container>
       </section>
 
       {/* ---- Timeline ---- */}
-      <section className="py-16 sm:py-24">
+      <section className="section-y-lg">
         <Container width="wide">
           <SectionHeading
             eyebrow="Company history"
@@ -117,7 +148,7 @@ export default function AboutPage() {
       </section>
 
       {/* ---- Team ---- */}
-      <section className="bg-ink-25 border-ink-100 border-y py-16 sm:py-24">
+      <section className="bg-ink-25 border-ink-100 section-y-lg border-y">
         <Container width="wide">
           <SectionHeading
             eyebrow="The team"
@@ -126,14 +157,21 @@ export default function AboutPage() {
             className="mb-12"
           />
 
-          <StaggerGroup as="ul" stagger={0.07} className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Kept a uniform grid on purpose. Sizing one person's card larger
+              than the others would imply a seniority ranking that isn't being
+              made — the bento treatment belongs on content, not on people. */}
+          <StaggerGroup
+            as="ul"
+            stagger={0.07}
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          >
             <TeamGrid members={team} />
           </StaggerGroup>
         </Container>
       </section>
 
       {/* ---- Offices & certifications ---- */}
-      <section className="py-16 sm:py-24">
+      <section className="section-y-lg">
         <Container width="wide">
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div>

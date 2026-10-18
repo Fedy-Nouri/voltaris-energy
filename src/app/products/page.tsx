@@ -44,7 +44,7 @@ export default function ProductsPage() {
         ]}
       />
 
-      <section className="py-16 sm:py-20" aria-labelledby="catalogue-heading">
+      <section className="section-y" aria-labelledby="catalogue-heading">
         <Container width="wide">
           {/*
             The filter tabs act as this section's visible heading, so a visually
@@ -54,11 +54,16 @@ export default function ProductsPage() {
           <h2 id="catalogue-heading" className="sr-only">
             Product catalogue
           </h2>
+          {/* The catalogue keeps a uniform grid deliberately: equal cells are
+              what let six products be compared against each other, and varied
+              sizes would fight the filter's layout animation as cards enter
+              and leave. The bento treatment is used on the home teaser, where
+              one product is genuinely being led with. */}
           <ProductFilter products={products} />
         </Container>
       </section>
 
-      <section className="bg-ink-25 border-ink-100 border-y py-16 sm:py-20">
+      <section className="bg-ink-25 border-ink-100 section-y border-y">
         <Container width="wide">
           <SectionHeading
             eyebrow="At a glance"

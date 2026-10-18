@@ -91,7 +91,7 @@ function SolutionSection({ solution, index }: { solution: Solution; index: numbe
       // No `scroll-mt` here: `scroll-padding-top: 6rem` on <html> already holds
       // anchor targets clear of the fixed header. Setting both made them stack,
       // landing the heading 192px down instead of 96px.
-      className={`py-16 sm:py-20 ${isAlternate ? 'bg-ink-25 border-ink-100 border-y' : ''}`}
+      className={`section-y ${isAlternate ? 'bg-ink-25 border-ink-100 border-y' : ''}`}
     >
       <Container width="wide">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-16">

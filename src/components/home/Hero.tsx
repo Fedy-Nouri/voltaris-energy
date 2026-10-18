@@ -52,7 +52,9 @@ export function Hero() {
       />
 
       <Container width="wide" className="relative">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-14">
+        {/* The copy column leads slightly, so the headline has room to sit on
+            two lines at the larger display size. */}
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
           {/* ---- Copy ---- */}
           <motion.div
             data-reveal

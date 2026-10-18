@@ -39,7 +39,7 @@ export default function ContactPage() {
       />
 
       {/* ---- Form & details ---- */}
-      <section className="py-16 sm:py-20">
+      <section className="section-y">
         <Container width="wide">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-16">
             {/* Form */}
@@ -120,7 +120,7 @@ export default function ContactPage() {
       {/* ---- FAQ ---- */}
       {/* No `scroll-mt`: `scroll-padding-top` on <html> already offsets anchor
           targets, and setting both doubles the gap. */}
-      <section id="faq" className="bg-ink-25 border-ink-100 border-y py-16 sm:py-24">
+      <section id="faq" className="bg-ink-25 border-ink-100 section-y-lg border-y">
         <Container>
           <SectionHeading
             eyebrow="Before you ask"

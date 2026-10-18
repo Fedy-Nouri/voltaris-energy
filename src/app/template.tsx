@@ -18,17 +18,24 @@ import { EASE_OUT_EXPO } from '@/lib/motion';
  * honest, jank-free option — `AnimatePresence` is used where it genuinely works
  * instead, for the mobile drawer and the case-study detail panel.
  *
+ * The transition deliberately does **not** animate opacity. Every page opens
+ * with a near-black hero (#06090b) while the page background is white, so
+ * fading a new route in from `opacity: 0` showed white through it for the
+ * first ~75ms of every navigation — a visible flash between two dark pages,
+ * and on cold loads too. An opaque rise keeps the hero painted on the very
+ * first frame; the hero's own `Reveal` still animates its content in, so the
+ * entrance is layered rather than lost.
+ *
  * The `data-page-transition` attribute is targeted by a `<noscript>` rule in
- * the root layout, so the content is never left at `opacity: 0` for a visitor
- * whose JavaScript fails to load.
+ * the root layout, which is harmless now that nothing here is transparent.
  */
 export default function Template({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
       data-page-transition
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
+      initial={{ y: 10 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.45, ease: EASE_OUT_EXPO }}
     >
       {children}
     </motion.div>

@@ -13,7 +13,7 @@ export function ProductTeaser() {
   const featured = products.slice(0, 3);
 
   return (
-    <section className="py-20 sm:py-28">
+    <section className="section-y-lg">
       <Container width="wide">
         <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeading
@@ -27,9 +27,11 @@ export function ProductTeaser() {
           </Button>
         </div>
 
-        <StaggerGroup as="ul" stagger={0.1} className="grid gap-5 md:grid-cols-3">
-          {featured.map((product) => (
-            <ProductCard key={product.slug} product={product} />
+        {/* Bento: the lead product takes a 2×2 cell with its capabilities,
+            the other two stack beside it. */}
+        <StaggerGroup as="ul" stagger={0.1} className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {featured.map((product, index) => (
+            <ProductCard key={product.slug} product={product} featured={index === 0} />
           ))}
         </StaggerGroup>
       </Container>

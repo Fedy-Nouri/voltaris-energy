@@ -54,21 +54,29 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
-  --text-display-xl: clamp(2.75rem, 1.65rem + 4.4vw, 5rem);
-  --text-display-xl--line-height: 1.02;
-  --text-display-xl--letter-spacing: -0.035em;
+  /* Display sizes run deliberately large. Scale is the cheapest way to make a
+     page feel confident, and the tracking tightens as the size grows because
+     wide letter-spacing at these sizes reads as a mistake.
 
-  --text-display-lg: clamp(2.25rem, 1.55rem + 2.8vw, 3.5rem);
-  --text-display-lg--line-height: 1.06;
-  --text-display-lg--letter-spacing: -0.03em;
+     `display-xl` is capped at 5.5rem rather than larger because its only use is
+     the home hero, which sits in a two-column layout — past this the headline
+     breaks to four lines in half the viewport width and stops reading as one
+     phrase. `display-lg` can go bigger because it is used full-width. */
+  --text-display-xl: clamp(3rem, 1.75rem + 5vw, 5.5rem);
+  --text-display-xl--line-height: 1;
+  --text-display-xl--letter-spacing: -0.042em;
 
-  --text-display-md: clamp(1.75rem, 1.35rem + 1.6vw, 2.5rem);
-  --text-display-md--line-height: 1.12;
-  --text-display-md--letter-spacing: -0.025em;
+  --text-display-lg: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+  --text-display-lg--line-height: 1.03;
+  --text-display-lg--letter-spacing: -0.038em;
 
-  --text-display-sm: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
-  --text-display-sm--line-height: 1.2;
-  --text-display-sm--letter-spacing: -0.02em;
+  --text-display-md: clamp(1.875rem, 1.35rem + 2.1vw, 3rem);
+  --text-display-md--line-height: 1.1;
+  --text-display-md--letter-spacing: -0.03em;
+
+  --text-display-sm: clamp(1.5rem, 1.3rem + 0.85vw, 2rem);
+  --text-display-sm--line-height: 1.18;
+  --text-display-sm--letter-spacing: -0.022em;
 
   /* Small uppercase label used for section eyebrows and table headers. */
   --text-eyebrow: 0.6875rem;
@@ -76,10 +84,20 @@
   --text-eyebrow--letter-spacing: 0.16em;
 
   /* ---- Radii, shadows, easing ------------------------------------------- */
-  --radius-panel: 0.875rem;
+  --radius-panel: 1.25rem;
+  /* Large bento cells need a bigger radius to stay in proportion — the same
+     corner on a 600px-wide panel reads much tighter than on a 300px one. */
+  --radius-panel-lg: 1.75rem;
 
-  --shadow-panel: 0 1px 2px rgb(6 9 11 / 0.04), 0 8px 24px -12px rgb(6 9 11 / 0.12);
-  --shadow-lift: 0 2px 4px rgb(6 9 11 / 0.05), 0 18px 40px -16px rgb(6 9 11 / 0.2);
+  /* Wide, soft, low-opacity shadows rather than a tight dark edge, plus a
+     1px inset highlight along the top so panels catch light and read as
+     lifted instead of merely outlined. */
+  --shadow-panel:
+    inset 0 1px 0 rgb(255 255 255 / 0.6), 0 1px 2px rgb(6 9 11 / 0.03),
+    0 12px 32px -16px rgb(6 9 11 / 0.14);
+  --shadow-lift:
+    inset 0 1px 0 rgb(255 255 255 / 0.7), 0 2px 6px rgb(6 9 11 / 0.04),
+    0 28px 60px -24px rgb(6 9 11 / 0.22);
   --shadow-glow: 0 0 0 1px rgb(29 224 181 / 0.3), 0 12px 40px -12px rgb(29 224 181 / 0.35);
 
   /* Shared easing curves. Mirrored in src/lib/motion.ts so CSS transitions
@@ -196,6 +214,90 @@
    --------------------------------------------------------------------------
    Repeated multi-property treatments, declared once so markup stays short.
    ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Section rhythm
+   --------------------------------------------------------------------------
+   Vertical spacing used to be written inline per section, which had drifted to
+   four different values. Declaring it here means the page's rhythm is one
+   decision rather than twenty.
+   -------------------------------------------------------------------------- */
+
+@utility section-y {
+  padding-block: --spacing(20);
+
+  @variant sm {
+    padding-block: --spacing(28);
+  }
+}
+
+/* For sections that sit against a hero or a dark band and need more room. */
+@utility section-y-lg {
+  padding-block: --spacing(24);
+
+  @variant sm {
+    padding-block: --spacing(36);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Animated border
+   --------------------------------------------------------------------------
+   A conic gradient whose angle animates, masked to the element's edge so only
+   a 1px rim is painted.
+
+   `@property` is what makes this possible: a plain custom property is an
+   untyped string and cannot be interpolated, so the gradient would snap from
+   0deg to 360deg. Registering it as an `<angle>` lets the browser animate it
+   on the compositor, with no JavaScript involved.
+
+   It only runs while hovered, and the `prefers-reduced-motion` rule in the
+   base layer already clamps the animation to a single 0.01ms iteration.
+   -------------------------------------------------------------------------- */
+
+@property --border-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes border-spin {
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+@utility border-glow {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(
+      from var(--border-angle),
+      transparent 0deg,
+      var(--color-volt-400) 70deg,
+      transparent 150deg,
+      transparent 360deg
+    );
+    /* Punches out the middle so only the padding box — the rim — survives. */
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.35s var(--ease-out-quint);
+    pointer-events: none;
+  }
+
+  &:hover::after {
+    opacity: 1;
+    animation: border-spin 4s linear infinite;
+  }
+}
 
 /* Faint technical grid, drawn in CSS so there is no image asset to ship. */
 @utility bg-grid {
