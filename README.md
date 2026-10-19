@@ -10,31 +10,32 @@ monitoring hardware and analytics to industrial and commercial clients.
 
 ## What's in it
 
-| Route                | What it does                                                                                 |
-| -------------------- | -------------------------------------------------------------------------------------------- |
-| `/`                  | Hero with a simulated live monitoring dashboard, value proposition, platform features, process, stats, testimonial |
-| `/products`          | Six products with a category filter and a side-by-side comparison table                        |
-| `/products/[slug]`   | Per-product detail — full specifications, capabilities, deployments, related products          |
-| `/solutions`         | Six industries, each with its challenge, approach and outcome figures                          |
-| `/case-studies`      | Four deployments; each card expands into a full study via a shared-element transition          |
-| `/about`             | Mission, scroll-linked company timeline, team, operating principles, offices, certifications   |
-| `/contact`           | Validated contact form, direct contact details, FAQ                                            |
+| Route              | What it does                                                                                                       |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `/`                | Hero with a simulated live monitoring dashboard, value proposition, platform features, process, stats, testimonial |
+| `/products`        | Six products with a category filter and a side-by-side comparison table                                            |
+| `/products/[slug]` | Per-product detail — full specifications, capabilities, deployments, related products                              |
+| `/solutions`       | Six industries, each with its challenge, approach and outcome figures                                              |
+| `/case-studies`    | Four deployments; each card expands into a full study via a shared-element transition                              |
+| `/about`           | Mission, scroll-linked company timeline, team, operating principles, offices, certifications                       |
+| `/contact`         | Validated contact form, direct contact details, FAQ                                                                |
 
 Plus a styled 404, `sitemap.xml`, `robots.txt`, a web manifest, and Open Graph
 images generated per page at build time.
 
 ## Tech stack
 
-| Tool                     | Version | Why                                                                                     |
-| ------------------------ | ------- | --------------------------------------------------------------------------------------- |
+| Tool                     | Version | Why                                                                                         |
+| ------------------------ | ------- | ------------------------------------------------------------------------------------------- |
 | **Next.js** (App Router) | 16.4    | Static generation for every page, Server Components by default, Server Actions for the form |
-| **TypeScript**           | 5       | `strict` on, no `any` anywhere in `src/`                                                  |
-| **Tailwind CSS**         | 4.3     | CSS-first config — the whole design system is `@theme` tokens in one file                 |
-| **Framer Motion**        | 14.3    | Scroll reveals, shared-element transitions, springs, scroll-linked progress                |
-| **Zod**                  | 4       | One validation schema shared by the browser and the server                                 |
-| **react-hook-form**      | 7       | Uncontrolled inputs, so typing does not re-render the form                                 |
-| **lucide-react**         | 1.58    | Icon set                                                                                   |
-| **Vitest**               | 5       | 31 tests over the validation schema and content integrity                                 |
+| **TypeScript**           | 5       | `strict` on, no `any` anywhere in `src/`                                                    |
+| **Tailwind CSS**         | 4.3     | CSS-first config — the whole design system is `@theme` tokens in one file                   |
+| **Framer Motion**        | 14.3    | Scroll reveals, shared-element transitions, springs, scroll-linked progress                 |
+| **Zod**                  | 4       | One validation schema shared by the browser and the server                                  |
+| **react-hook-form**      | 7       | Uncontrolled inputs, so typing does not re-render the form                                  |
+| **lucide-react**         | 1.58    | Icon set                                                                                    |
+| **MongoDB driver**       | 7       | Enquiry persistence, no ODM — Zod already owns the schema                                   |
+| **Vitest**               | 5       | 38 tests over validation, content integrity and the stored document shape                   |
 | **Vercel**               | —       | Hosting                                                                                     |
 
 ## Running it locally
@@ -52,15 +53,16 @@ Open http://localhost:3000. No environment variables are needed to run or build 
 `NEXT_PUBLIC_SITE_URL` only affects canonical URLs and Open Graph image
 resolution, and falls back to `http://localhost:3000`. See `.env.example`.
 
-| Script                 | What it does                                   |
-| ---------------------- | ---------------------------------------------- |
-| `npm run dev`          | Dev server                                     |
-| `npm run build`        | Production build                               |
-| `npm start`            | Serve the production build                     |
-| `npm run typecheck`    | `tsc --noEmit`                                 |
-| `npm run lint`         | ESLint                                         |
-| `npm test`             | Vitest                                         |
-| `npm run format`       | Prettier, including Tailwind class sorting     |
+| Script              | What it does                                                 |
+| ------------------- | ------------------------------------------------------------ |
+| `npm run dev`       | Dev server                                                   |
+| `npm run build`     | Production build                                             |
+| `npm start`         | Serve the production build                                   |
+| `npm run typecheck` | `tsc --noEmit`                                               |
+| `npm run lint`      | ESLint                                                       |
+| `npm test`          | Vitest                                                       |
+| `npm run format`    | Prettier, including Tailwind class sorting                   |
+| `npm run audit`     | Accessibility + responsive sweep (needs `npm start` running) |
 
 CI runs typecheck, lint, tests and a build on every push and pull request.
 
@@ -186,11 +188,33 @@ because `preventDefault()` after an `await` is too late to stop a submit that
 has already been dispatched.
 
 There's also a honeypot field (hidden from sight, tab order and the
-accessibility tree) and a small per-IP rate limit. The handler logs the
-validated enquiry rather than emailing it — wiring a provider would require an
-API key, and a contact form that silently fails on a reviewer's machine is worse
-than one that is honest about what it does. `deliverEnquiry()` in
-`app/contact/actions.ts` is the single function to replace.
+accessibility tree) and a small per-IP rate limit.
+
+### Enquiries are stored in MongoDB
+
+Validated enquiries are written to an `enquiries` collection for an admin
+dashboard to read later. Each document carries `createdAt` (indexed
+descending), `status: 'new'` and a `source` tag — the status field exists from
+the first insert so that marking things read later needs no backfill.
+
+**No IP address or user agent is stored.** The rate limiter derives an IP
+transiently and discards it; persisting one would make this a store of personal
+data with no present purpose, which sits badly against the GDPR claim on the
+site's own FAQ page. A test asserts the document has exactly the expected keys,
+so adding tracking fields later is a deliberate act rather than an accident.
+
+The official **`mongodb` driver** rather than an ODM: Zod already validates
+every enquiry before it reaches the database, so Mongoose would mean a second
+schema that can drift from the first — and its model registry misbehaves on a
+warm serverless instance. The client is cached on `globalThis`, because each
+invocation can get a fresh module scope and would otherwise open a connection
+per submission until Atlas' limit is reached.
+
+**It degrades on purpose.** With no `MONGODB_URI` set the form still validates,
+still confirms, and logs the enquiry instead of storing it — so a fresh clone
+runs with no database. If the database is configured but unreachable, the
+visitor gets a generic error rather than a field-level one, because a database
+outage is not something they can fix by editing a field.
 
 ### SEO
 
@@ -208,7 +232,7 @@ other describes the thing the page is about.
   `h2`s where the design has no visible section heading
 - A single `<MotionConfig reducedMotion="user">` plus a CSS reset means every
   animation degrades when the OS asks for less motion — and the components that
-  need to change *behaviour* rather than just stop moving never render a
+  need to change _behaviour_ rather than just stop moving never render a
   different tree, which would be a hydration mismatch
 - Skip-to-content link, visible focus rings, Escape-to-close and focus return on
   both the mobile drawer and the case-study panel
