@@ -88,8 +88,12 @@ src/
 │  ├─ ui/                      Button, Card, Badge, Field, SpecTable, Container, …
 │  └─ home/ products/ about/ case-studies/ contact/
 ├─ content/                    all copy, as typed data modules
-├─ lib/                        seo.ts, schema.ts, validation.ts, motion.ts, icons.tsx, utils.ts
-└─ types/                      shared content types
+├─ lib/                        seo.ts, schema.ts, validation.ts, motion.ts,
+│                              icons.tsx, utils.ts, mongodb.ts
+└─ types/                      content types, enquiry.ts (stored document shape)
+
+scripts/
+└─ audit.mjs                   accessibility + responsive sweep over headless Chrome
 ```
 
 ---
@@ -127,6 +131,35 @@ There is **no dark-mode toggle**, deliberately. This is an art-directed brand
 site with a fixed light/dark section rhythm, not an application; a toggle would
 mean maintaining two versions of a deliberate composition for no real benefit.
 
+### Bento layouts, and where they are not used
+
+Card sections are asymmetric grids rather than uniform rows — a 2×2 lead cell
+in the platform features, a tall lead card in the value props, one emphasised
+figure in the stats band, a full-width lead case study. Cell sizes are chosen
+to tile each grid exactly, so no row ends with an orphan.
+
+Two grids stay uniform on purpose, and the reason is recorded in each file. The
+**products catalogue** is a comparison grid — equal cells are what let six
+products be scanned against each other, and varied sizes would fight the
+filter's `layout` animation as cards enter and leave. The **team grid** is six
+people of equal standing; sizing one card larger would imply a seniority
+ranking that is not being made.
+
+The sizing lives in the components, not in `content/`, because it is a layout
+decision about a particular grid rather than a property of the data.
+
+### The header is a floating island
+
+At the top of a page it spans the container width with no background, so the
+logo aligns with page content and the hero is unobstructed. Once scrolled it
+contracts into a narrower glass pill detached from the top edge — it stops
+being part of the hero and becomes chrome above it.
+
+Only `maxWidth`, `marginTop` and colour animate. Height stays fixed, because
+animating it would reflow the page beneath on every frame, and blur and shadow
+are toggled rather than animated since a per-frame `backdrop-filter` is
+expensive.
+
 ### The live dashboard
 
 The hero panel is a simulated monitoring feed — a product illustration, not real
@@ -154,6 +187,13 @@ unmounts as soon as the next route commits, so wrapping routes in
 new one. An enter-only transition is the honest, jank-free option.
 `AnimatePresence` is used where it genuinely works instead — the mobile drawer
 and the case-study panel, whose unmounts this code actually controls.
+
+The transition also **does not animate opacity**, which is less obvious. Every
+page opens on a near-black hero while the page background is white, so fading a
+route in from `opacity: 0` showed white through it for the first ~75ms of every
+navigation — a visible flash between two dark pages, and on cold loads too. An
+opaque rise keeps the hero painted on the first frame; the hero's own `Reveal`
+still animates its content in, so the entrance is layered rather than lost.
 
 ### Smooth scrolling is opt-in, never global
 
@@ -239,15 +279,49 @@ other describes the thing the page is about.
 - Real `<table>` markup for specifications, `<figure>`/`<figcaption>` for quotes
 - A `<noscript>` rule reinstates any element an entrance animation would
   otherwise leave at `opacity: 0`
+- **Colour contrast meets WCAG AA.** Secondary text on the dark surfaces is
+  `ink-300` minimum (6.44:1); the lighter steps are reserved for light
+  backgrounds, because no single grey clears 4.5:1 against both ends
 
-Verified at 375 / 768 / 1280 with no horizontal overflow and a clean console in
-both normal and reduced-motion modes.
+`npm run audit` enforces all of the above — see below.
+
+### The audit script
+
+`scripts/audit.mjs` drives headless Chrome over the DevTools Protocol and
+checks every route at 375 / 768 / 1280 for horizontal overflow, heading
+structure, unlabelled controls, and text contrast against its real background.
+All 21 page/width combinations pass.
+
+The contrast check exists because an earlier version of this script passed
+clean while four tokens on the dark surfaces were failing AA — one as low as
+**1.66:1**. Checking structure but not colour gave false confidence, which is
+worse than not checking.
+
+Two details in it are worth knowing, because the obvious implementations are
+both wrong. Finding the background by walking ancestors **lies for overlays** —
+the fixed header sits above the dark hero but is not descended from it, so
+every nav link reported a 1:1 failure; it hit-tests with `elementsFromPoint`
+instead. And `elementsFromPoint` only works **inside the viewport**, so
+anything below the fold was measured against whatever sat at the clamped
+coordinate; it now measures in viewport slices while scrolling.
+
+It is not in CI: it needs a built app, a running server and a real Chrome,
+which is slow and flaky in a hosted runner. It is a local gate before shipping
+visual changes.
 
 ### Things I'd do next
 
+- **An admin dashboard for the stored enquiries**, which is what the
+  persistence layer was built for. `getEnquiries()` returns the typed
+  collection and reuses the cached connection, `status` is already `'new'` on
+  every document so marking things read needs no migration, and the
+  `createdAt` index is the only one a newest-first listing needs. It would need
+  authentication before shipping — enquiries are personal data, and right now
+  nothing exposes them only because no route reads them
 - Move the rate limiter to Vercel KV — the in-memory map only covers one warm
   serverless instance, which is noted in the code
 - Give case studies real routes if they ever needed to rank on their own terms;
   today their full text reaches crawlers as `articleBody` in JSON-LD
 - Add Playwright coverage for the form and the drawer; the current tests cover
-  the schema and content integrity, not the components
+  the validation schema, content integrity and the stored document shape, but
+  no component rendering
