@@ -21,7 +21,9 @@ export function ScrollProgress() {
     <motion.div
       aria-hidden
       style={{ scaleX }}
-      className="via-volt-400 to-volt-300 fixed inset-x-0 top-18 z-50 h-px origin-left bg-gradient-to-r from-transparent"
+      // Pinned to the very top rather than under the header: the header is now
+      // a detached island, so a rule hanging beneath it would float in space.
+      className="via-volt-400 to-volt-300 fixed inset-x-0 top-0 z-50 h-px origin-left bg-gradient-to-r from-transparent"
     />
   );
 }

@@ -102,7 +102,7 @@ export function MobileNav({ isActive }: MobileNavProps) {
               transition={{ duration: 0.38, ease: EASE_IN_OUT_QUART }}
               className="bg-ink-900 fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col border-l border-white/10 focus:outline-none lg:hidden"
             >
-              <div className="flex h-18 shrink-0 items-center justify-between border-b border-white/8 px-5">
+              <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/8 px-5">
                 <Logo onDark />
                 <button
                   type="button"
