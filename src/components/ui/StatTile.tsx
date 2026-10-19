@@ -42,7 +42,7 @@ export function StatTile({ stat, featured = false, children }: StatTileProps) {
       </p>
       <p
         className={cn(
-          'text-ink-400 mt-1.5 leading-relaxed',
+          'text-ink-300 mt-1.5 leading-relaxed',
           featured ? 'max-w-xs text-sm' : 'text-[0.8125rem]',
         )}
       >

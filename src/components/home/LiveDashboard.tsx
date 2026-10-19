@@ -166,21 +166,21 @@ export function LiveDashboard() {
           <span className="text-eyebrow text-volt-400 shrink-0 font-mono font-medium uppercase">
             Live
           </span>
-          <span className="text-ink-600" aria-hidden>
+          <span className="text-ink-300" aria-hidden>
             /
           </span>
           <span className="text-ink-300 truncate text-xs font-medium">
             Hartwell Foods · Site 04
           </span>
         </div>
-        <span className="text-ink-500 tabular shrink-0 font-mono text-xs">{clock}</span>
+        <span className="text-ink-300 tabular shrink-0 font-mono text-xs">{clock}</span>
       </div>
 
       <div className="p-4 sm:p-5">
         {/* ---- Headline reading + gauge ---- */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-eyebrow text-ink-500 font-mono uppercase">Total site load</p>
+            <p className="text-eyebrow text-ink-300 font-mono uppercase">Total site load</p>
             <p className="mt-1.5 flex items-baseline gap-2">
               <motion.span
                 // Keying on the value makes each new sample a fresh element, so
@@ -194,7 +194,7 @@ export function LiveDashboard() {
               >
                 {formatNumber(current)}
               </motion.span>
-              <span className="text-ink-400 font-mono text-sm">kW</span>
+              <span className="text-ink-300 font-mono text-sm">kW</span>
               <span
                 className={cn(
                   'flex items-center gap-0.5 font-mono text-xs',
@@ -278,7 +278,7 @@ export function LiveDashboard() {
             })}
           </svg>
 
-          <div className="text-eyebrow text-ink-600 mt-2 flex justify-between font-mono uppercase">
+          <div className="text-eyebrow text-ink-300 mt-2 flex justify-between font-mono uppercase">
             <span>−10 min</span>
             <span>peak {formatNumber(peak)} kW</span>
             <span>now</span>
@@ -287,7 +287,7 @@ export function LiveDashboard() {
 
         {/* ---- Circuit breakdown ---- */}
         <div className="mt-5 border-t border-white/8 pt-4">
-          <p className="text-eyebrow text-ink-500 mb-3 font-mono uppercase">By circuit</p>
+          <p className="text-eyebrow text-ink-300 mb-3 font-mono uppercase">By circuit</p>
           <ul className="flex flex-col gap-2.5">
             {CIRCUITS.map((circuit) => {
               const load = Math.round(current * circuit.share);
@@ -398,7 +398,7 @@ function HeadroomGauge({ headroom }: { headroom: number }) {
         </text>
       </svg>
 
-      <p className="text-eyebrow text-ink-500 mt-1 text-center font-mono uppercase">Headroom</p>
+      <p className="text-eyebrow text-ink-300 mt-1 text-center font-mono uppercase">Headroom</p>
     </div>
   );
 }
@@ -406,7 +406,7 @@ function HeadroomGauge({ headroom }: { headroom: number }) {
 function Reading({ label, value }: { label: string; value: string }) {
   return (
     <div className="px-1 first:pl-0">
-      <dt className="text-eyebrow text-ink-500 font-mono uppercase">{label}</dt>
+      <dt className="text-eyebrow text-ink-300 font-mono uppercase">{label}</dt>
       <dd className="text-ink-100 tabular mt-1 font-mono text-sm font-medium">{value}</dd>
     </div>
   );

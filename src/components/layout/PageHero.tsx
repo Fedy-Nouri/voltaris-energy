@@ -39,7 +39,7 @@ export function PageHero({ eyebrow, title, description, crumbs, stats, children 
       <Container width="wide" className="relative">
         {crumbs && crumbs.length > 0 && (
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="text-ink-500 flex flex-wrap items-center gap-1.5 text-xs">
+            <ol className="text-ink-300 flex flex-wrap items-center gap-1.5 text-xs">
               {crumbs.map((crumb) => (
                 <li key={crumb.path} className="flex items-center gap-1.5">
                   <Link href={crumb.path} className="hover:text-volt-300 transition-colors">
@@ -76,7 +76,7 @@ export function PageHero({ eyebrow, title, description, crumbs, stats, children 
             <dl className="grid gap-6 sm:grid-cols-3">
               {stats.map((stat) => (
                 <div key={stat.label} className="flex flex-col border-l border-white/10 pl-4">
-                  <dt className="text-ink-400 order-2 mt-1 text-[0.8125rem]">{stat.label}</dt>
+                  <dt className="text-ink-300 order-2 mt-1 text-[0.8125rem]">{stat.label}</dt>
                   <dd className="tabular order-1 font-mono text-2xl font-semibold text-white">
                     {stat.value}
                   </dd>

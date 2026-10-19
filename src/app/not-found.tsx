@@ -56,7 +56,7 @@ export default function NotFound() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-ink-400 hover:text-volt-300 text-sm transition-colors"
+                    className="text-ink-300 hover:text-volt-300 text-sm transition-colors"
                   >
                     {item.label}
                   </Link>

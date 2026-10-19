@@ -15,7 +15,7 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-ink-950 text-ink-400 relative overflow-hidden">
+    <footer className="bg-ink-950 text-ink-300 relative overflow-hidden">
       {/* Faint grid texture, inheriting colour from the parent. */}
       <div
         className="bg-grid mask-fade-b pointer-events-none absolute inset-0 text-white/40"
@@ -101,11 +101,11 @@ export function SiteFooter() {
               */}
               <div className="flex items-baseline gap-2">
                 <h3 className="text-sm font-medium text-white">{office.city}</h3>
-                <span className="text-eyebrow text-ink-500 font-mono uppercase">
+                <span className="text-eyebrow text-ink-300 font-mono uppercase">
                   {office.timezone}
                 </span>
               </div>
-              <p className="text-ink-500 mt-1 text-[0.8125rem]">{office.role}</p>
+              <p className="text-ink-300 mt-1 text-[0.8125rem]">{office.role}</p>
               <address className="mt-2 text-[0.8125rem] not-italic">
                 {office.lines.map((line) => (
                   <span key={line} className="block">
@@ -128,7 +128,7 @@ export function SiteFooter() {
         </div>
 
         {/* ---- Legal ---- */}
-        <div className="text-ink-600 flex flex-col gap-2 border-t border-white/8 py-8 text-[0.8125rem] sm:flex-row sm:items-center sm:justify-between">
+        <div className="text-ink-300 flex flex-col gap-2 border-t border-white/8 py-8 text-[0.8125rem] sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {year} {site.legalName}. All rights reserved.
           </p>

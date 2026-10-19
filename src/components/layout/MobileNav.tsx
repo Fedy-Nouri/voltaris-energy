@@ -156,7 +156,7 @@ export function MobileNav({ isActive }: MobileNavProps) {
                 </Button>
                 <a
                   href={`mailto:${site.email}`}
-                  className="text-ink-400 hover:text-volt-300 block text-center font-mono text-sm transition-colors"
+                  className="text-ink-300 hover:text-volt-300 block text-center font-mono text-sm transition-colors"
                 >
                   {site.email}
                 </a>

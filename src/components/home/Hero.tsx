@@ -103,7 +103,7 @@ export function Hero() {
               </Button>
             </motion.div>
 
-            <motion.p variants={heroItem} className="text-ink-500 font-mono text-xs">
+            <motion.p variants={heroItem} className="text-ink-300 font-mono text-xs">
               Typical first-year reduction: 17%. Median payback: 4.3 months.
             </motion.p>
           </motion.div>
@@ -130,7 +130,7 @@ export function Hero() {
 
         {/* ---- Client logo marquee ---- */}
         <div className="mt-16 sm:mt-20">
-          <p className="text-eyebrow text-ink-600 mb-5 text-center font-mono uppercase">
+          <p className="text-eyebrow text-ink-300 mb-5 text-center font-mono uppercase">
             Measuring for
           </p>
           <LogoMarquee />
@@ -169,7 +169,7 @@ function LogoMarquee() {
         {[...clientLogos, ...clientLogos].map((logo, index) => (
           <span
             key={`${logo}-${index}`}
-            className="text-ink-500 shrink-0 font-mono text-sm font-medium tracking-wide whitespace-nowrap uppercase"
+            className="text-ink-300 shrink-0 font-mono text-sm font-medium tracking-wide whitespace-nowrap uppercase"
           >
             {logo}
           </span>

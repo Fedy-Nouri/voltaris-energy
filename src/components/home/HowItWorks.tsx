@@ -79,7 +79,7 @@ export function HowItWorks() {
                         Left exposed it would run into the title with no
                         separating space and be announced as "01Site survey".
                       */}
-                      <span className="text-ink-300 mr-2 font-mono text-sm" aria-hidden>
+                      <span className="text-ink-400 mr-2 font-mono text-sm" aria-hidden>
                         {String(index + 1).padStart(2, '0')}
                       </span>
                       {step.title}
