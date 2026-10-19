@@ -52,7 +52,17 @@ function getClient(): Promise<MongoClient> {
       // Fail fast rather than letting a form submission hang: the visitor is
       // waiting on this request.
       serverSelectionTimeoutMS: 5000,
-    }).connect();
+    })
+      .connect()
+      // Caching the promise is the point — but caching a *rejected* one is a
+      // trap. A warm instance whose first connection failed (cluster asleep,
+      // firewall not yet open) would reuse that rejection for its whole life,
+      // so fixing the cause would appear to change nothing until the instance
+      // happened to be recycled. Clearing it means the next request retries.
+      .catch((error: unknown) => {
+        global.__voltarisMongo = undefined;
+        throw error;
+      });
   }
 
   return global.__voltarisMongo;
